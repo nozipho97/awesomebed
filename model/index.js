@@ -1,7 +1,7 @@
 //import dtabase connection from the config folder
 let db = require('../config');
 //import bcypt module 
-let { hash, compare, hashSync } = require('bcypt');
+let { hash, compare, hashSync } = require('bcrypt');
 //
 let { createToken } = require('../middleware/AunthenticatedUser');
 
@@ -9,7 +9,7 @@ let { createToken } = require('../middleware/AunthenticatedUser');
 class User {
     login(req, res) {
         const { emailAdd, UserPass } = req.body
-        const strQry =
+        const qry =
             `SELECT userID,firstName,lastName,gender,emailAdd,userPass,userRole,userProfile
             FROM Users
             WHERE emailAdd =${emailAdd};
@@ -155,17 +155,17 @@ class User {
 //product 
 class Product {
     fetchProducts(req, res) {
-        const strQry = `SELECT id, prodName, prodDescription, category, price, prodQuantity, imgURL
-        FROM products;`;
+        const strQry = `SELECT ProductID, prodName, prodDescription, category, price, prodQuantity, imgURL
+        FROM Products;`;
         db.query(strQry, (err, results)=> {
             if(err) throw err;
             res.status(200).json({results: results})
         });
     }
     fetchProduct(req, res) {
-        const strQry = `SELECT id, prodName, prodDescription, category, price, prodQuantity, imgURL
-        FROM products
-        WHERE id = ?;`;
+        const strQry = `SELECT ProductID, prodName, prodDescription, category, price, prodQuantity, imgURL
+        FROM Products
+        WHERE ProductID = ?;`;
         db.query(strQry, [req.params.id], (err, results)=> {
             if(err) throw err;
             res.status(200).json({results: results})
@@ -194,7 +194,7 @@ class Product {
         `
         UPDATE Products
         SET ?
-        WHERE id = ?
+        WHERE ProductID = ?
         `;
         db.query(strQry,[req.body, req.params.id],
             (err)=> {
@@ -211,7 +211,7 @@ class Product {
         const strQry = 
         `
         DELETE FROM Products
-        WHERE id = ?;
+        WHERE  ProductID = ?;
         `;
         db.query(strQry,[req.params.id], (err)=> {
             if(err) res.status(400).json({err: "The record was not found."});
